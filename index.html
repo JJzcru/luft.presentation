@@ -1,50 +1,1259 @@
 <!doctype html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<html lang="en">
 
-		<title>reveal.js</title>
+<head>
+    <meta charset="utf-8">
+    <title>CLEAN Architecture</title>
+    <meta name="description" content="Architecture for the development of maintainable applications">
+    <meta name="author" content="Jose J. Cruz">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css" id="theme">
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/monokai-sublime.css">
+    <!-- Printing and PDF exports -->
+    <script>
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+    <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+</head>
 
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+<body>
+    <div class="reveal">
+        <!-- Any section element inside of this container is displayed as a slide -->
+        <div class="slides">
+            <section>
+                <p>Creación de una guía para la utilización de la arquitectura “Clean Architecture” en aplicaciones Android con lenguaje de programación Java, utilizando como modelo la implementación de un prototipo de monitoreo deportivo para un equipo de Ultimate</p>
+                <p>
+                    <small>Autor: <a href="https://github.com/JJzcru">Jose J. Cruz Torres</a></small>
+                </p>
+            </section>
+            <section id="problematic">
+                <h2>Problemática</h2>
+                <ul>
+                    <li class="fragment">Mantenibilidad</li>
+                    <li class="fragment">Adaptabilidad</li>
+                    <li class="fragment">Pruebas (Testing)</li>
+                    <li class="fragment">Dependencia</li>
+                </ul>
+                <aside class="notes">
+                    Cuentas la historia de los años 70-80 y la mencion de la burbuja dotCom.
+                </aside>
+            </section>
+            <section id="cleanArchitecture">
+                <section>
+                    <h2>CLEAN ARCHITECTURE</h2>
+                    <p>
+                        Es una <b><u>arquitectura</u></b> de software que promueve el uso de los patrones <b><u>SOLID</u></b>, para generar aplicaciones que sean probadas (testable), independientes de <i>framework</i>, de interfaces gráficas, de base de datos o de cualquier agente externo.
+                        <!--<img src="img/cleanArquitectureDiagramFull.png">-->
+                    </p>
+                </section>
+                <section>
+                    <h2>SOLID</h2>
+                    <p>
+                        Es un acrónimo mnemónico que describe los cinco principios básicos de programación orientada a objeto y diseño, que al ser aplicados juntos un programador desarrollara un sistema que es facilmente mantenible y adaptable a lo largo del tiempo.
+                    </p>
+                </section>
+                <section>
+                    <h2>Principios SOLID</h2>
+                    <p class="fragment fade-up">
+                        <b><u>S</u></b>: Single Responsability Principle
+                    </p>
+                    <p class="fragment fade-up">
+                        <b><u>O</u></b>: Open/Close Principle
+                    </p>
+                    <p class="fragment fade-up">
+                        <b><u>L</u></b>: Liskov Substitution Principle
+                    </p>
+                    <p class="fragment fade-up">
+                        <b><u>I</u></b>: Interface Segregation Principle
+                    </p>
+                    <p class="fragment fade-up">
+                        <b><u>D</u></b>: Dependency Inversion Control
+                    </p>
+                </section>
+            </section>
+            <!-- Example of nested vertical slides -->
+            <section id="cleanArchitectureDiagram">
+                <h2>CLEAN Architecture</h2>
+                <img src="img/cleanArquitectureDiagramFull.png">
+            </section>
+            <section id="cleanArchitectureImplementationDiagram">
+                <h2>Implementación</h2>
+                <img src="img/cleanArchitectureLayers.png">
+            </section>
+            <section id="presentationLayer">
+                <section>
+                    <h2>Capa de Presentación</h2>
+                    <ul>
+                        <li>Internal/DI</li>
+                        <li>Mapper</li>
+                        <li>Model</li>
+                        <li>Navigation</li>
+                        <li>Presenter</li>
+                        <li>View
+                            <ul>
+                                <li>Activity</li>
+                                <li>Fragment</li>
+                                <li>Adapter</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Internal/DI</h2>
+                    <p>Se encarga de manejar las dependencias y promuieve el cumplimiento el principio de <i>Dependency Inversion Control</i></p>
+                </section>
+                <section>
+                    <h2>Mapper</h2>
+                    <p>Transforma los objetos de la capa de aplicación a los modelos de la capa de presentación y viceversa</p>
+                    <pre><code class="java">
+public class ExerciseModelDataMapper {
+    @Inject
+    ExerciseModelDataMapper() {}
+    public ExerciseModel transform(Exercise exercise) {
+        if (exercise == null) {
+            throw new IllegalArgumentException("Cannot transform a null value");
+        }
+        ExerciseModel exerciseModel = new ExerciseModel();
+        exerciseModel.setExerciseID(exercise.getExerciseID());
+        exerciseModel.setName(exercise.getName());
+        exerciseModel.setMeasure(exercise.getMeasure());
+        exerciseModel.setTag(exercise.getTag());
+        exerciseModel.setAmount(exercise.getAmount());
+        exerciseModel.setUnit(exercise.getUnit());
 
-		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+        return exerciseModel;
+    }
+    public Exercise transform(ExerciseModel exerciseModel) {
+        if (exerciseModel == null) {
+            throw new IllegalArgumentException("Cannot transform a null value");
+        }
+        Exercise exercise = new Exercise();
+        if(exerciseModel.getExerciseID() != null){
+            exercise.setExerciseID(exerciseModel.getExerciseID());
+        }
+        exercise.setName(exerciseModel.getName());
+        exercise.setMeasure(exerciseModel.getMeasure());
+        exercise.setTag(exerciseModel.getTag());
+        exercise.setAmount(exerciseModel.getAmount());
+        exercise.setUnit(exerciseModel.getUnit());
+        return exercise;
+    }
+    public Collection&lt;ExerciseModel&gt; transform(Collection&lt;Exercise&gt; exercisesCollection) {
+        Collection&lt;ExerciseModel&gt; exerciseModelsCollection;
+        if (exercisesCollection != null &amp;&amp; !exercisesCollection.isEmpty()) {
+            exerciseModelsCollection = new ArrayList&lt;&gt;();
+            for (Exercise exercise : exercisesCollection) {
+                exerciseModelsCollection.add(transform(exercise));
+            }
+        } else {
+            exerciseModelsCollection = Collections.emptyList();
+        }
+        return exerciseModelsCollection;
+    }
+}   
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Model</h2>
+                    <p>Implementación de una entidad en la capa de presentación.</p>
+                    <pre><code class="java">
+public class ExerciseModel {
+    private String ExerciseID;
+    private String name;
+    private String measure;
+    private String tag;
+    private Integer amount;
+    private String unit;
 
-		<!-- Printing and PDF exports -->
-		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
-		</div>
+    public ExerciseModel() {
+    }
 
-		<script src="lib/js/head.min.js"></script>
-		<script src="js/reveal.js"></script>
+    public ExerciseModel(String ExerciseID) {
+        this.ExerciseID = ExerciseID;
+    }
 
-		<script>
-			// More info https://github.com/hakimel/reveal.js#configuration
-			Reveal.initialize({
-				history: true,
+    public String getExerciseID() {
+        return this.ExerciseID;
+    }
 
-				// More info https://github.com/hakimel/reveal.js#dependencies
-				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-				]
-			});
-		</script>
-	</body>
+    public void setExerciseID(String exerciseID) {
+        this.ExerciseID = exerciseID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getMeasure() {
+        return measure;
+    }
+
+    public void setMeasure(String measure) {
+        this.measure = measure;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    @Override
+    public String toString() {
+        return "***** Exercise Model Details *****\n" +
+                "ExerciseID=" + this.getExerciseID() + "\n" +
+                "name=" + this.getName() + "\n" +
+                "measure=" + this.getMeasure() + "\n" +
+                "tag=" + this.getTag() + "\n" +
+                "amount=" + this.getAmount() + "\n" +
+                "unit=" + this.getUnit() + "\n" +
+                "*******************************";
+    }
+}
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Navigation</h2>
+                    <p>Maneja las transiciones entre Activity</p>
+                    <pre><code class="java" data-trim>
+@Singleton
+public class Navigator {
+    @Inject
+    Navigator() {}
+    public void navigateToCreatePlayer(Context context) {
+        if (context != null) {
+            Intent intentToLaunch = PlayerPutActivity.getCallingIntent(context);
+            intentToLaunch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            context.startActivity(intentToLaunch);
+        }
+    }
+    public void navigateToUpdatePlayer(Context context, String PlayerID){
+        if (context != null) {
+            Intent intentToLaunch = PlayerPutActivity.getCallingIntent(context);
+            intentToLaunch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intentToLaunch.putExtra("PlayerID", PlayerID);
+            context.startActivity(intentToLaunch);
+        }
+    }
+    public void navigateToCreateExercise(Context context) {
+        if (context != null) {
+            Intent intentToLaunch = ExercisePutActivity.getCallingIntent(context);
+            intentToLaunch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            context.startActivity(intentToLaunch);
+        }
+    }
+    public void navigateToUpdateExercise(Context context, String ExerciseID){
+        if (context != null) {
+            Intent intentToLaunch = ExercisePutActivity.getCallingIntent(context);
+            intentToLaunch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intentToLaunch.putExtra("ExerciseID", ExerciseID);
+            context.startActivity(intentToLaunch);
+        }
+    }
+    public void navigateToCreateTraining(Context context){
+        if (context != null) {
+            Intent intentToLaunch = TrainingActivity.getCallingIntent(context);
+            intentToLaunch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            context.startActivity(intentToLaunch);
+        }
+    }
+    public void navigateToHistoryTraining(Context context, TrainingModel trainingModel){
+        if (context != null) {
+            Intent intentToLaunch = HistoryActivity.getCallingIntent(context);
+            intentToLaunch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intentToLaunch.putExtra("TrainingID", trainingModel.getTrainingID());
+            intentToLaunch.putExtra("title", new SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.US).format(trainingModel.getDate()));
+            context.startActivity(intentToLaunch);
+        }
+    }
+    public void navigateToPlayerPerformance(Context context, PlayerModel playerModel){
+        if (context != null) {
+            Intent intentToLaunch = PlayerPerformanceActivity.getCallingIntent(context);
+            intentToLaunch.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intentToLaunch.putExtra("PlayerID", playerModel.getPlayerID());
+            intentToLaunch.putExtra("title", playerModel.getName());
+            context.startActivity(intentToLaunch);
+        }
+    }
+}  
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Presenter</h2>
+                    <p>Controla toda la lógica de la interfaz gráfica, reacciona a eventos, acciones de los usuarios y cambia la vista si ocurren cambios de los datos</p>
+                    <pre><code class="java" data-trim>
+@PerActivity
+public class PlayerListPresenter implements Presenter{
+    private PlayerListView viewListView;
+
+    private final UseCase getPlayerListUseCase;
+    private final DeletePlayer deletePlayerUseCase;
+    private final PlayerModelDataMapper playerModelDataMapper;
+
+    @Inject
+    PlayerListPresenter(@Named("playerList") UseCase getPlayerListUseCase, @Named("deletePlayer") UseCase deletePlayerUseCase, PlayerModelDataMapper playerModelDataMapper) {
+        this.getPlayerListUseCase = getPlayerListUseCase;
+        this.playerModelDataMapper = playerModelDataMapper;
+        this.deletePlayerUseCase = (DeletePlayer) deletePlayerUseCase;
+    }
+
+    public void setView(@NonNull PlayerListView view) {
+        this.viewListView = view;
+    }
+
+    public void deletePlayer(String PlayerID){
+        this.deletePlayerUseCase.setPlayerID(PlayerID);
+        this.deletePlayerUseCase.execute(new PlayerDeleteSubscriber());
+    }
+
+    @Override
+    public void resume() {
+        this.loadPlayerList();
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void destroy() {
+        this.getPlayerListUseCase.unsubscribe();
+        this.viewListView = null;
+    }
+
+    /**
+     * Initializes the presenter by start retrieving the getPlayer list.
+     */
+    public void initialize() {
+        this.loadPlayerList();
+    }
+
+    /**
+     * Loads all Players.
+     */
+    private void loadPlayerList() {
+        this.hideViewRetry();
+        this.showViewLoading();
+        this.getPlayerList();
+    }
+
+    public void onPlayerClicked(PlayerModel playerModel) {
+        this.viewListView.viewPlayer(playerModel);
+    }
+
+    private void showViewLoading() {
+        this.viewListView.showLoading();
+    }
+
+    private void hideViewLoading() {
+        this.viewListView.hideLoading();
+    }
+
+    private void showViewRetry() {
+        this.viewListView.showRetry();
+    }
+
+    private void hideViewRetry() {
+        this.viewListView.hideRetry();
+    }
+
+    private void showErrorMessage(ErrorBundle errorBundle) {
+        String errorMessage = ErrorMessageFactory.create(this.viewListView.context(), errorBundle.getException());
+        this.viewListView.showError(errorMessage);
+    }
+
+    private void showPlayersCollectionInView(Collection&lt;Player&gt; playersCollection) {
+        final Collection&lt;PlayerModel&gt; playerModelsCollection = this.playerModelDataMapper.transform(playersCollection);
+        final List&lt;PlayerModel&gt; playerModelsList = new ArrayList&lt;&gt;>(playerModelsCollection);
+        Collections.sort(playerModelsList, sortRecordByRole());
+        this.viewListView.renderPlayerList(playerModelsList);
+    }
+
+    private Comparator&lt;PlayerModel&gt; sortRecordByRole(){
+        return (playerModel1, playerModel2) -> playerModel1.getRole().compareTo(playerModel2.getRole());
+    }
+    private void getPlayerList() {
+        this.getPlayerListUseCase.execute(new PlayerListPresenter.PlayerListSubscriber());
+    }
+
+    private final class PlayerListSubscriber extends DefaultSubscriber&lt;List&lt;Player>> {
+
+        @Override 
+        public void onCompleted() {
+            PlayerListPresenter.this.hideViewLoading();
+        }
+
+        @Override 
+        public void onError(Throwable e) {
+            e.printStackTrace();
+            PlayerListPresenter.this.hideViewLoading();
+            PlayerListPresenter.this.showErrorMessage(new DefaultErrorBundle((Exception) e));
+            PlayerListPresenter.this.showViewRetry();
+        }
+
+        @Override 
+        public void onNext(List&lt;Player&gt; players) {
+            if(players.size()==0){
+                PlayerListPresenter.this.hideViewLoading();
+                PlayerListPresenter.this.viewListView.showEmptyState();
+            }
+            else{
+                PlayerListPresenter.this.showPlayersCollectionInView(players);
+            }
+        }
+    }
+
+    private final class PlayerDeleteSubscriber extends DefaultSubscriber&lt;Player&gt; {
+        @Override 
+        public void onCompleted() {
+            PlayerListPresenter.this.loadPlayerList();
+        }
+
+        @Override 
+        public void onError(Throwable e) {
+            e.printStackTrace();
+        }
+    }
+}
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>View</h2>
+                    <p>Posee todos los componentes relacionados al framework de android para manejar las vistas, ciclo de vida de la aplicación y eventos en las pantallas</p>
+                </section>
+                <section>
+                    <h2>Activity</h2>
+                    <p>Es la unidad atómica de la cual se compone una aplicación de android, en ella se reservan recursos, espacio de memoria y pantalla de la aplicación</p>
+                    <pre><code class="java" data-trim>
+public class PlayerPutActivity extends BaseActivity implements HasComponent&lt;PlayerComponent&gt; {
+    private static final String TAG = "L-PlayerPutActivity";
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, PlayerPutActivity.class);
+    }
+
+    private PlayerComponent playerComponent;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        setContentView(R.layout.activity_layout);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        PlayerPutFragment playerPutFragment = new PlayerPutFragment();
+        if(getIntent().getExtras()!= null){
+            String playerID = getIntent().getExtras().getString("PlayerID");
+            Bundle bundle = new Bundle();
+            bundle.putString("PlayerID", playerID);
+            playerPutFragment.setArguments(bundle);
+        }
+        addFragment(R.id.fragmentContainer, playerPutFragment);
+        this.initializeInjector();
+    }
+
+    private void initializeInjector(){
+        this.playerComponent = DaggerPlayerComponent.builder()
+                .appComponent(getAppComponent())
+                .activityModule(getActivityModule())
+                .playerModule(new PlayerModule())
+                .build();
+    }
+
+    @Override
+    public PlayerComponent getComponent() {
+        return playerComponent;
+    }
+
+    @Override
+    public void onBackPressed() {
+        int count = getFragmentManager().getBackStackEntryCount();
+        if (count == 0) {
+            super.onBackPressed();
+            this.finish();
+            this.overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+        } else {
+            getFragmentManager().popBackStack();
+        }
+    }
+}
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Fragment</h2>
+                    <p>Consisten una parte o la totalidad de la pantalla del activity que se esta mostrando</p>
+                    <pre><code class="java" data-trim>
+public class ExerciseScoreSetFragment extends BaseFragment implements ExerciseScoreSetView {
+  private static final String TAG = "L-ExerciseScoreSetFragment";
+  private Unbinder unbinder;
+  private String ExerciseID;
+
+  @BindView(R.id.score_great_value)
+  EditText scoreValueGreatEditText;
+
+  @BindView(R.id.score_good_value)
+  EditText scoreValueGoodEditText;
+
+  @BindView(R.id.score_normal_value)
+  EditText scoreValueNormalEditText;
+
+  @BindView(R.id.score_bad_value)
+  EditText scoreValueBadEditText;
+
+  @BindView(R.id.score_terrible_value)
+  EditText scoreValueTerribleEditText;
+
+  @BindString(R.string.word_amount)
+  String exerciseTypeAmount;
+
+  @BindString(R.string.word_stopwatch)
+  String exerciseTypeStopwatch;
+
+  @BindString(R.string.word_timer)
+  String exerciseTypeTimer;
+
+  @BindString(R.string.score_measure_time)
+  String exerciseMeasureTime;
+
+  @BindString(R.string.score_measure_amount)
+  String exerciseMeasureAmount;
+
+  @Inject
+  ExerciseScoreSetPresenter exerciseScoreSetPresenter;
+
+  ExerciseModel exerciseModel;
+  InputMethodManager imm;
+
+  public ExerciseScoreSetFragment(){
+    setRetainInstance(true);
+  }
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setHasOptionsMenu(true);
+    initializeInjector();
+    exerciseModel = ((ExercisePutActivity) getActivity()).getExerciseModel();
+    if(this.getArguments() != null){
+      String ExerciseID = this.getArguments().getString("ExerciseID");
+      if(ExerciseID!= null){
+        this.ExerciseID = ExerciseID;
+      }
+    }
+  }
+  private void initializeInjector(){
+    ((ExercisePutActivity) getActivity()).getComponent().inject(this);
+  }
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    final View view = inflater.inflate(R.layout.fragment_exercise_score_set, container, false);
+    this.exerciseScoreSetPresenter.setView(getActivity(), this);
+    unbinder = ButterKnife.bind(this, view);
+    return view;
+  }
+  @Override
+  public void onActivityCreated(Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+    final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+    imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+  }
+  private String capitalize(final String line) {
+    return Character.toUpperCase(line.charAt(0)) + line.substring(1);
+  }
+  private void setScoreHintText(String scoreHintText){
+    scoreValueGreatEditText.setHint(scoreHintText);
+    scoreValueGoodEditText.setHint(scoreHintText);
+    scoreValueNormalEditText.setHint(scoreHintText);
+    scoreValueBadEditText.setHint(scoreHintText);
+    scoreValueTerribleEditText.setHint(scoreHintText);
+  }
+  @Override public void onDestroyView() {
+    super.onDestroyView();
+    unbinder.unbind();
+    //imm.toggleSoftInput(0, 0);
+  }
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    inflater.inflate(R.menu.exercise, menu);
+    super.onCreateOptionsMenu(menu, inflater);
+  }
+  @Override
+  public void onPrepareOptionsMenu(Menu menu) {
+    MenuItem saveExercise = menu.findItem(R.id.save_exercise);
+    saveExercise.setVisible(true);
+  }
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case android.R.id.home:
+        getActivity().getSupportFragmentManager().popBackStack();
+        return true;
+      case R.id.save_exercise:
+        if(validateSave()){
+          if(this.ExerciseID != null){
+            this.exerciseModel.setExerciseID(this.ExerciseID);
+            this.exerciseScoreSetPresenter.updateExercise(this.exerciseModel, createScoreModelList());
+          }
+          else{
+            this.exerciseScoreSetPresenter.createExercise(this.exerciseModel, createScoreModelList());
+          }
+        }
+        return true;
+      default:
+        return super.onOptionsItemSelected(item);
+    }
+  }
+  @Override
+  public void renderScoreDetails(ArrayList&lt;ScoreModel&gt; scoreModelCollection) {
+    if(scoreModelCollection.size() &gt; 0){
+      if(exerciseModel.getMeasure().equals("stopwatch")){
+        scoreValueGreatEditText.setText(String.valueOf(scoreModelCollection.get(4).getValue()/1000));
+        scoreValueGoodEditText.setText(String.valueOf(scoreModelCollection.get(3).getValue()/1000));
+        scoreValueNormalEditText.setText(String.valueOf(scoreModelCollection.get(2).getValue()/1000));
+        scoreValueBadEditText.setText(String.valueOf(scoreModelCollection.get(1).getValue()/1000));
+        scoreValueTerribleEditText.setText(String.valueOf(scoreModelCollection.get(0).getValue()/1000));
+      }
+      else{
+        scoreValueGreatEditText.setText(String.valueOf(scoreModelCollection.get(4).getValue()));
+        scoreValueGoodEditText.setText(String.valueOf(scoreModelCollection.get(3).getValue()));
+        scoreValueNormalEditText.setText(String.valueOf(scoreModelCollection.get(2).getValue()));
+        scoreValueBadEditText.setText(String.valueOf(scoreModelCollection.get(1).getValue()));
+        scoreValueTerribleEditText.setText(String.valueOf(scoreModelCollection.get(0).getValue()));
+      }
+    }
+  }
+  @Override
+  public void finish() {
+    getActivity().finish();
+  }
+  @Override
+  public void showErrorMessage(String Message) {
+    showToastMessage(Message);
+  }
+  private Boolean validateSave(){
+    try{
+      Integer greatScoreValue = Integer.valueOf(scoreValueGreatEditText.getText().toString());
+      Integer goodScoreValue =Integer.valueOf(scoreValueGoodEditText.getText().toString());
+      Integer normalScoreValue =Integer.valueOf(scoreValueNormalEditText.getText().toString());
+      Integer badScoreValue =Integer.valueOf(scoreValueBadEditText.getText().toString());
+      Integer terribleScoreValue =Integer.valueOf(scoreValueTerribleEditText.getText().toString());
+
+      switch (exerciseModel.getMeasure()) {
+        case "stopwatch":
+          validateStopwatch(greatScoreValue, goodScoreValue, normalScoreValue, badScoreValue, terribleScoreValue);
+          break;
+        case "timer":
+          validateTimer(greatScoreValue, goodScoreValue, normalScoreValue, badScoreValue, terribleScoreValue);
+          break;
+        default:
+          validateAmount(greatScoreValue, goodScoreValue, normalScoreValue, badScoreValue, terribleScoreValue);
+          break;
+      }
+
+      return true;
+    }
+    catch (NumberFormatException e){
+      showToastMessage(ErrorMessageFactory.create(getActivity(), new InvalidFieldFormatException("Invalid input in fields", e)));
+    }
+    catch (InvalidScoreOrderException e){
+      showToastMessage(ErrorMessageFactory.create(getActivity(), new InvalidScoreOrderException("Invalid input in fields", e))); 
+    }
+    return false;
+  }
+  private void validateAmount(Integer greatScoreValue,Integer goodScoreValue, Integer normalScoreValue, Integer badScoreValue, Integer terribleScoreValue) throws InvalidScoreOrderException{
+    if(greatScoreValue&lt;=goodScoreValue || goodScoreValue&lt;=normalScoreValue || normalScoreValue&lt;=badScoreValue || badScoreValue&lt;=terribleScoreValue){
+      throw new InvalidScoreOrderException("The Score order for 'Amount' is invalid");
+    }
+  }
+  private void validateStopwatch(Integer greatScoreValue,Integer goodScoreValue, Integer normalScoreValue, Integer badScoreValue, Integer terribleScoreValue)throws InvalidScoreOrderException{
+    if(greatScoreValue&gt;=goodScoreValue || goodScoreValue&gt;=normalScoreValue || normalScoreValue&gt;=badScoreValue || badScoreValue&gt;=terribleScoreValue){
+      throw new InvalidScoreOrderException("The Score order for 'Stopwatch' is invalid");
+    }
+  }
+  private void validateTimer(Integer greatScoreValue,Integer goodScoreValue, Integer normalScoreValue, Integer badScoreValue, Integer terribleScoreValue) throws InvalidScoreOrderException{
+    if(greatScoreValue&lt;=goodScoreValue || goodScoreValue&lt;=normalScoreValue || normalScoreValue&lt;=badScoreValue || badScoreValue&lt;=terribleScoreValue){
+      throw new InvalidScoreOrderException("The Score order for 'Timer' is invalid");
+    }
+  }
+  private List&lt;ScoreModel&gt; createScoreModelList(){
+    List&lt;ScoreModel&gt; scoreModelList = new ArrayList&lt;&gt;();
+    for(int i=0;i&lt;5;i++){
+      ScoreModel scoreModel = new ScoreModel();
+      scoreModel.setScore(i+1);
+      Integer value = null;
+      try{
+        switch (i){
+          case 4:
+            value = Integer.valueOf(scoreValueGreatEditText.getText().toString());
+            break;
+          case 3:
+            value = Integer.valueOf(scoreValueGoodEditText.getText().toString());
+            break;
+          case 2:
+            value = Integer.valueOf(scoreValueNormalEditText.getText().toString());
+            break;
+          case 1:
+            value = Integer.valueOf(scoreValueBadEditText.getText().toString());
+            break;
+          case 0:
+            value = Integer.valueOf(scoreValueTerribleEditText.getText().toString());
+            break;
+        }
+        if(exerciseModel.getMeasure().equals("stopwatch")){
+          value *= 1000;
+        }
+        scoreModel.setValue(value);
+      }
+      catch (NumberFormatException e){
+        scoreModel.setValue(null);
+      }
+      if(exerciseModel.getMeasure().equals("timer")){
+        scoreModel.setType("time");
+      }
+      else{
+        scoreModel.setType("amount");
+      }
+      //Log.i(TAG, scoreModel.toString());
+      scoreModelList.add(scoreModel);
+    }
+    return scoreModelList;
+  }
+
+}
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Adapter</h2>
+                    <p>Componente de la libreria de android para manejo de listas o cualquier tipo de elemento que se repita en una pantalla</p>
+                    <pre><code class="java" data-trim>
+@PerActivity
+public class PlayerPerfomanceRecordListAdapter extends RecyclerView.Adapter&lt;PlayerPerfomanceRecordListAdapter.RecordListViewHolder&gt;{
+    private final LayoutInflater layoutInflater;
+
+    private List&lt;RecordModel&gt; recordModelList;
+    private Map&lt;String, String&gt; tagValueMap;
+    private String exerciseTagValues[];
+    private String exerciseTagTitle[];
+
+    @Inject
+    PlayerPerfomanceRecordListAdapter(Context context) {
+        this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.recordModelList = Collections.emptyList();
+        this.tagValueMap = new HashMap&lt;&gt;();
+        this.exerciseTagValues = context.getResources().getStringArray(R.array.exercise_tag_value);
+        this.exerciseTagTitle = context.getResources().getStringArray(R.array.exercise_tag);
+        setTagValueMap();
+    }
+
+    private void setTagValueMap(){
+        for(int i=0;i&lt;exerciseTagValues.length;i++){
+            tagValueMap.put(exerciseTagValues[i], exerciseTagTitle[i]);
+        }
+    }
+    @Override
+    public PlayerPerfomanceRecordListAdapter.RecordListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        final View view = this.layoutInflater.inflate(R.layout.item_player_performance_exercise, parent, false);
+        return new PlayerPerfomanceRecordListAdapter.RecordListViewHolder(view);
+    }
+
+    public void setRecordModelList(List&lt;RecordModel&gt; recordModelList) {
+        this.recordModelList = recordModelList;
+        this.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onBindViewHolder(PlayerPerfomanceRecordListAdapter.RecordListViewHolder holder, int position) {
+        RecordModel recordModel = this.recordModelList.get(position);
+        if(recordModel.getMeasure().equals("stopwatch")){
+            String time = new SimpleDateFormat("mm:ss:SSS", Locale.US).format(new Date(recordModel.getAverageValue().longValue()));
+            holder.exerciseValueTextView.setText(capitalize(holder.wordAverage) + ": " + time);
+        }
+        else{
+            holder.exerciseValueTextView.setText(capitalize(holder.wordAverage) + ": " + String.valueOf(Math.round(recordModel.getAverageValue())));
+        }
+        holder.exerciseNameTextView.setText(recordModel.getExerciseName());
+
+        holder.exerciseTagTextView.setText(getTagNameFromMap(recordModel.getTag()));
+        Integer score = recordModel.getAverageScore().intValue();
+        Boolean isHalf = false;
+        if((recordModel.getAverageScore() - score)&gt;=0.5){
+            isHalf = true;
+        }
+        setScoreStart(holder, score, isHalf);
+    }
+
+    private String capitalize(final String line) {
+        return Character.toUpperCase(line.charAt(0)) + line.substring(1);
+    }
+
+    private String getTagNameFromMap(String tagValue){
+        return tagValueMap.get(tagValue);
+    }
+
+    private void setScoreStart(PlayerPerfomanceRecordListAdapter.RecordListViewHolder holder, Integer score, Boolean isHalf){
+        switch (score){
+            case 1: setRatingToOne(holder, isHalf);
+                break;
+            case 2: setRatingToTwo(holder, isHalf);
+                break;
+            case 3: setRatingToThree(holder, isHalf);
+                break;
+            case 4: setRatingToFour(holder, isHalf);
+                break;
+            case 5: setRatingToFive(holder);
+                break;
+        }
+    }
+
+    private void setRatingToOne(PlayerPerfomanceRecordListAdapter.RecordListViewHolder holder, Boolean halfStar){
+        holder.ratingStarOne.setBackground(holder.starFull);
+        if(halfStar){
+            holder.ratingStarTwo.setBackground(holder.starHalf);
+        }
+    }
+
+    private void setRatingToTwo(PlayerPerfomanceRecordListAdapter.RecordListViewHolder holder, Boolean halfStar){
+        holder.ratingStarOne.setBackground(holder.starFull);
+        holder.ratingStarTwo.setBackground(holder.starFull);
+        if(halfStar){
+            holder.ratingStarThree.setBackground(holder.starHalf);
+        }
+    }
+
+    private void setRatingToThree(PlayerPerfomanceRecordListAdapter.RecordListViewHolder holder, Boolean halfStar){
+        holder.ratingStarOne.setBackground(holder.starFull);
+        holder.ratingStarTwo.setBackground(holder.starFull);
+        holder.ratingStarThree.setBackground(holder.starFull);
+        if(halfStar){
+            holder.ratingStarFour.setBackground(holder.starHalf);
+        }
+    }
+
+    private void setRatingToFour(PlayerPerfomanceRecordListAdapter.RecordListViewHolder holder, Boolean halfStar){
+        holder.ratingStarOne.setBackground(holder.starFull);
+        holder.ratingStarTwo.setBackground(holder.starFull);
+        holder.ratingStarThree.setBackground(holder.starFull);
+        holder.ratingStarFour.setBackground(holder.starFull);
+        if(halfStar){
+            holder.ratingStarFive.setBackground(holder.starHalf);
+        }
+    }
+
+    private void setRatingToFive(PlayerPerfomanceRecordListAdapter.RecordListViewHolder holder){
+        holder.ratingStarOne.setBackground(holder.starFull);
+        holder.ratingStarTwo.setBackground(holder.starFull);
+        holder.ratingStarThree.setBackground(holder.starFull);
+        holder.ratingStarFour.setBackground(holder.starFull);
+        holder.ratingStarFive.setBackground(holder.starFull);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemCount() {
+        return (this.recordModelList != null) ? this.recordModelList.size() : 0;
+    }
+
+    static class RecordListViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.exercise_container)
+        LinearLayout exerciseContainerLayout;
+
+        @BindView(R.id.exercise_name)
+        TextView exerciseNameTextView;
+
+        @BindView(R.id.exercise_value)
+        TextView exerciseValueTextView;
+
+        @BindView(R.id.exercise_tag)
+        TextView exerciseTagTextView;
+
+        @BindView(R.id.rating_container)
+        LinearLayout ratingContainer;
+
+        @BindView(R.id.rating_one)
+        ImageView ratingStarOne;
+
+        @BindView(R.id.rating_two)
+        ImageView ratingStarTwo;
+
+        @BindView(R.id.rating_three)
+        ImageView ratingStarThree;
+
+        @BindView(R.id.rating_four)
+        ImageView ratingStarFour;
+
+        @BindView(R.id.rating_five)
+        ImageView ratingStarFive;
+
+        @BindDrawable(R.drawable.ic_star_half)
+        Drawable starHalf;
+
+        @BindDrawable(R.drawable.ic_star_full)
+        Drawable starFull;
+
+        @BindString(R.string.word_average)
+        String wordAverage;
+
+        RecordListViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+}
+
+                    </code></pre>
+                </section>
+            </section>
+            <section id="domainLayer">
+                <h2>Capa de Dominio</h2>
+                <ul>
+                    <li class="fragment fade-up">Interactor</li>
+                    <li class="fragment fade-up">Repository</li>
+                    <li class="fragment fade-up">Entities</li>
+                </ul>
+            </section>
+            <section id="dataLayer">
+                <h2>Capa de Datos</h2>
+                <ul>
+                    <li class="fragment fade-up">Cache
+                        <ul>
+                            <li class="fragment fade-up">Serializer</li>
+                        </ul>
+                    </li>
+                    <li class="fragment fade-up">Entity
+                        <ul>
+                            <li class="fragment fade-up">Mapper</li>
+                        </ul>
+                    </li>
+                    <li class="fragment fade-up">Repository
+                        <ul>
+                            <li class="fragment fade-up">DataSource</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+            <section>
+                <h2>Slides</h2>
+                <p>
+                    Not a coder? Not a problem. There's a fully-featured visual editor for authoring these, try it out at <a href="http://slides.com" target="_blank">http://slides.com</a>.
+                </p>
+            </section>
+            <section>
+                <h2>Point of View</h2>
+                <p>
+                    Press <strong>ESC</strong> to enter the slide overview.
+                </p>
+                <p>
+                    Hold down alt and click on any element to zoom in on it using <a href="http://lab.hakim.se/zoom-js">zoom.js</a>. Alt + click anywhere to zoom back out.
+                </p>
+            </section>
+            <section>
+                <h2>Touch Optimized</h2>
+                <p>
+                    Presentations look great on touch devices, like mobile phones and tablets. Simply swipe through your slides.
+                </p>
+            </section>
+            <section data-markdown>
+                <script type="text/template">
+                    ## Markdown support Write content using inline or external Markdown. Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown). ```
+                    <section data-markdown>
+                        ## Markdown support Write content using inline or external Markdown. Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
+                    </section>
+                    ```
+                </script>
+            </section>
+            <section id="transitions">
+                <h2>Transition Styles</h2>
+                <p>
+                    You can select from different transitions, like:
+                    <br>
+                    <a href="?transition=none#/transitions">None</a> -
+                    <a href="?transition=fade#/transitions">Fade</a> -
+                    <a href="?transition=slide#/transitions">Slide</a> -
+                    <a href="?transition=convex#/transitions">Convex</a> -
+                    <a href="?transition=concave#/transitions">Concave</a> -
+                    <a href="?transition=zoom#/transitions">Zoom</a>
+                </p>
+            </section>
+            <section id="themes">
+                <h2>Themes</h2>
+                <p>
+                    reveal.js comes with a few themes built in:
+                    <br>
+                    <!-- Hacks to swap themes after the page has loaded. Not flexible and only intended for the reveal.js demo deck. -->
+                    <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/black.css'); return false;">Black (default)</a> -
+                    <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/white.css'); return false;">White</a> -
+                    <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/league.css'); return false;">League</a> -
+                    <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/sky.css'); return false;">Sky</a> -
+                    <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/beige.css'); return false;">Beige</a> -
+                    <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/simple.css'); return false;">Simple</a>
+                    <br>
+                    <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/serif.css'); return false;">Serif</a> -
+                    <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/blood.css'); return false;">Blood</a> -
+                    <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/night.css'); return false;">Night</a> -
+                    <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/moon.css'); return false;">Moon</a> -
+                    <a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/solarized.css'); return false;">Solarized</a>
+                </p>
+            </section>
+            <section>
+                <section data-background="#dddddd">
+                    <h2>Slide Backgrounds</h2>
+                    <p>
+                        Set <code>data-background="#dddddd"</code> on a slide to change the background color. All CSS color formats are supported.
+                    </p>
+                    <a href="#" class="navigate-down">
+                        <img width="178" height="238" data-src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
+                    </a>
+                </section>
+                <section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/image-placeholder.png">
+                    <h2>Image Backgrounds</h2>
+                    <pre><code class="hljs">&lt;section data-background="image.png"&gt;</code></pre>
+                </section>
+                <section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/image-placeholder.png" data-background-repeat="repeat" data-background-size="100px">
+                    <h2>Tiled Backgrounds</h2>
+                    <pre><code class="hljs" style="word-wrap: break-word;">&lt;section data-background="image.png" data-background-repeat="repeat" data-background-size="100px"&gt;</code></pre>
+                </section>
+                <section data-background-video="https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.mp4,https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.webm" data-background-color="#000000">
+                    <div style="background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px;">
+                        <h2>Video Backgrounds</h2>
+                        <pre><code class="hljs" style="word-wrap: break-word;">&lt;section data-background-video="video.mp4,video.webm"&gt;</code></pre>
+                    </div>
+                </section>
+                <section data-background="http://i.giphy.com/90F8aUepslB84.gif">
+                    <h2>... and GIFs!</h2>
+                </section>
+            </section>
+            <section data-transition="slide" data-background="#4d7e65" data-background-transition="zoom">
+                <h2>Background Transitions</h2>
+                <p>
+                    Different background transitions are available via the backgroundTransition option. This one's called "zoom".
+                </p>
+                <pre><code class="hljs">Reveal.configure({ backgroundTransition: 'zoom' })</code></pre>
+            </section>
+            <section data-transition="slide" data-background="#b5533c" data-background-transition="zoom">
+                <h2>Background Transitions</h2>
+                <p>
+                    You can override background transitions per-slide.
+                </p>
+                <pre><code class="hljs" style="word-wrap: break-word;">&lt;section data-background-transition="zoom"&gt;</code></pre>
+            </section>
+            <section>
+                <h2>Pretty Code</h2>
+                <pre><code class="hljs" data-trim contenteditable>
+function linkify( selector ) {
+  if( supports3DTransforms ) {
+
+    var nodes = document.querySelectorAll( selector );
+
+    for( var i = 0, len = nodes.length; i &lt; len; i++ ) {
+      var node = nodes[i];
+
+      if( !node.className ) {
+        node.className += ' roll';
+      }
+    }
+  }
+}
+                    </code></pre>
+                <p>Code syntax highlighting courtesy of <a href="http://softwaremaniacs.org/soft/highlight/en/description/">highlight.js</a>.</p>
+            </section>
+            <section>
+                <h2>Marvelous List</h2>
+                <ul>
+                    <li>No order here</li>
+                    <li>Or here</li>
+                    <li>Or here</li>
+                    <li>Or here</li>
+                </ul>
+            </section>
+            <section>
+                <h2>Fantastic Ordered List</h2>
+                <ol>
+                    <li>One is smaller than...</li>
+                    <li>Two is smaller than...</li>
+                    <li>Three!</li>
+                </ol>
+            </section>
+            <section>
+                <h2>Tabular Tables</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Value</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Apples</td>
+                            <td>$1</td>
+                            <td>7</td>
+                        </tr>
+                        <tr>
+                            <td>Lemonade</td>
+                            <td>$2</td>
+                            <td>18</td>
+                        </tr>
+                        <tr>
+                            <td>Bread</td>
+                            <td>$3</td>
+                            <td>2</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            <section>
+                <h2>Clever Quotes</h2>
+                <p>
+                    These guys come in two forms, inline:
+                    <q cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
+                        &ldquo;The nice thing about standards is that there are so many to choose from&rdquo;</q> and block:
+                </p>
+                <blockquote cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
+                    &ldquo;For years there has been a theory that millions of monkeys typing at random on millions of typewriters would reproduce the entire works of Shakespeare. The Internet has proven this theory to be untrue.&rdquo;
+                </blockquote>
+            </section>
+            <section>
+                <h2>Intergalactic Interconnections</h2>
+                <p>
+                    You can link between slides internally,
+                    <a href="#/2/3">like this</a>.
+                </p>
+            </section>
+            <section>
+                <h2>Speaker View</h2>
+                <p>There's a <a href="https://github.com/hakimel/reveal.js#speaker-notes">speaker view</a>. It includes a timer, preview of the upcoming slide as well as your speaker notes.</p>
+                <p>Press the <em>S</em> key to try it out.</p>
+                <aside class="notes">
+                    Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
+                </aside>
+            </section>
+            <section>
+                <h2>Export to PDF</h2>
+                <p>Presentations can be <a href="https://github.com/hakimel/reveal.js#pdf-export">exported to PDF</a>, here's an example:</p>
+                <iframe data-src="https://www.slideshare.net/slideshow/embed_code/42840540" width="445" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:3px solid #666; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe>
+            </section>
+            <section>
+                <h2>Global State</h2>
+                <p>
+                    Set <code>data-state="something"</code> on a slide and <code>"something"</code> will be added as a class to the document element when the slide is open. This lets you apply broader style changes, like switching the page background.
+                </p>
+            </section>
+            <section data-state="customevent">
+                <h2>State Events</h2>
+                <p>
+                    Additionally custom events can be triggered on a per slide basis by binding to the <code>data-state</code> name.
+                </p>
+                <pre><code class="javascript" data-trim contenteditable style="font-size: 18px;">
+Reveal.addEventListener( 'customevent', function() {
+    console.log( '"customevent" has fired' );
+} );
+                    </code></pre>
+            </section>
+            <section>
+                <h2>Take a Moment</h2>
+                <p>
+                    Press B or . on your keyboard to pause the presentation. This is helpful when you're on stage and want to take distracting slides off the screen.
+                </p>
+            </section>
+            <section>
+                <h2>Much more</h2>
+                <ul>
+                    <li>Right-to-left support</li>
+                    <li><a href="https://github.com/hakimel/reveal.js#api">Extensive JavaScript API</a></li>
+                    <li><a href="https://github.com/hakimel/reveal.js#auto-sliding">Auto-progression</a></li>
+                    <li><a href="https://github.com/hakimel/reveal.js#parallax-background">Parallax backgrounds</a></li>
+                    <li><a href="https://github.com/hakimel/reveal.js#keyboard-bindings">Custom keyboard bindings</a></li>
+                </ul>
+            </section>
+            <section style="text-align: left;">
+                <h1>THE END</h1>
+                <p>
+                    - <a href="http://slides.com">Try the online editor</a>
+                    <br> - <a href="https://github.com/hakimel/reveal.js">Source code &amp; documentation</a>
+                </p>
+            </section>
+        </div>
+    </div>
+    <script src="js/csi.min.js"></script>
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+    <script>
+    // More info https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+        // More info https://github.com/hakimel/reveal.js#dependencies
+        dependencies: [{
+            src: 'lib/js/classList.js',
+            condition: function() {
+                return !document.body.classList;
+            }
+        }, {
+            src: 'plugin/markdown/marked.js',
+            condition: function() {
+                return !!document.querySelector('[data-markdown]');
+            }
+        }, {
+            src: 'plugin/markdown/markdown.js',
+            condition: function() {
+                return !!document.querySelector('[data-markdown]');
+            }
+        }, {
+            src: 'plugin/highlight/highlight.js',
+            async: true,
+            callback: function() {
+                hljs.initHighlightingOnLoad();
+            }
+        }, {
+            src: 'plugin/zoom-js/zoom.js',
+            async: true
+        }, {
+            src: 'plugin/notes/notes.js',
+            async: true
+        }]
+    });
+    </script>
+</body>
+
 </html>
