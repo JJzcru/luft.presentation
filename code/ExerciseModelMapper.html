@@ -1,0 +1,45 @@
+public class ExerciseModelDataMapper {
+    @Inject
+    ExerciseModelDataMapper() {}
+    public ExerciseModel transform(Exercise exercise) {
+        if (exercise == null) {
+            throw new IllegalArgumentException("Cannot transform a null value");
+        }
+        ExerciseModel exerciseModel = new ExerciseModel();
+        exerciseModel.setExerciseID(exercise.getExerciseID());
+        exerciseModel.setName(exercise.getName());
+        exerciseModel.setMeasure(exercise.getMeasure());
+        exerciseModel.setTag(exercise.getTag());
+        exerciseModel.setAmount(exercise.getAmount());
+        exerciseModel.setUnit(exercise.getUnit());
+
+        return exerciseModel;
+    }
+    public Exercise transform(ExerciseModel exerciseModel) {
+        if (exerciseModel == null) {
+            throw new IllegalArgumentException("Cannot transform a null value");
+        }
+        Exercise exercise = new Exercise();
+        if(exerciseModel.getExerciseID() != null){
+            exercise.setExerciseID(exerciseModel.getExerciseID());
+        }
+        exercise.setName(exerciseModel.getName());
+        exercise.setMeasure(exerciseModel.getMeasure());
+        exercise.setTag(exerciseModel.getTag());
+        exercise.setAmount(exerciseModel.getAmount());
+        exercise.setUnit(exerciseModel.getUnit());
+        return exercise;
+    }
+    public Collection&lt;ExerciseModel&gt; transform(Collection&lt;Exercise&gt; exercisesCollection) {
+        Collection&lt;ExerciseModel&gt; exerciseModelsCollection;
+        if (exercisesCollection != null &amp;&amp; !exercisesCollection.isEmpty()) {
+            exerciseModelsCollection = new ArrayList&lt;&gt;();
+            for (Exercise exercise : exercisesCollection) {
+                exerciseModelsCollection.add(transform(exercise));
+            }
+        } else {
+            exerciseModelsCollection = Collections.emptyList();
+        }
+        return exerciseModelsCollection;
+    }
+}
